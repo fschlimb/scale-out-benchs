@@ -189,9 +189,17 @@ def create_delinq_features(pdf, **kwargs):
     delinq_90 = delinq_pdf.query('current_loan_delinquency_status >= 3')[['loan_id', 'monthly_reporting_period']].groupby('loan_id').min()
     delinq_90['delinquency_90'] = delinq_90['monthly_reporting_period']
     delinq_90.drop(columns=['monthly_reporting_period'], inplace=True)
-    delinq_180 = delinq_pdf.query('current_loan_delinquency_status >= 6')[['loan_id', 'monthly_reporting_period']].groupby('loan_id').min()
-    delinq_180['delinquency_180'] = delinq_180['monthly_reporting_period']
-    delinq_180.drop(columns=['monthly_reporting_period'], inplace=True)
+
+    delinq_180 = delinq_pdf.query('current_loan_delinquency_status >= 6')
+    print(delinq_180.head())
+    delinq_180 = delinq_180[['loan_id', 'monthly_reporting_period']]
+    print(delinq_180.head())
+    delinq_180 = delinq_180.groupby('loan_id').min()
+    print(delinq_180.head())
+
+    #delinq_180 = delinq_pdf.query('current_loan_delinquency_status >= 6')[['loan_id', 'monthly_reporting_period']].groupby('loan_id').min()
+    #delinq_180['delinquency_180'] = delinq_180['monthly_reporting_period']
+    #delinq_180.drop(columns=['monthly_reporting_period'], inplace=True)
     del(delinq_pdf)
     delinq_merge = delinq_30.merge(delinq_90, how='left', on=['loan_id'])
     delinq_merge['delinquency_90'] = delinq_merge['delinquency_90'].fillna(np.dtype('datetime64[ms]').type('1970-01-01').astype('datetime64[ms]'))

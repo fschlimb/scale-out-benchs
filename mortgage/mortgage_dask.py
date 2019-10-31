@@ -40,6 +40,7 @@ def run_pd_workflow(quarter=1, year=2000, perf_file="", **kwargs):
     print("compute time with copy to host", time.time()-t1)
     return final_pdf.compute()
 
+
 def pd_load_performance_csv(performance_path, **kwargs):
     """ Loads performance data
 
@@ -58,6 +59,58 @@ def pd_load_performance_csv(performance_path, **kwargs):
         "credit_enhancement_proceeds", "repurchase_make_whole_proceeds", "other_foreclosure_proceeds",
         "non_interest_bearing_upb", "principal_forgiveness_upb", "repurchase_make_whole_proceeds_flag",
         "foreclosure_principal_write_off_amount", "servicing_activity_indicator"
+    ]
+    dtypes = {
+        "loan_id": np.int64,
+        "monthly_reporting_period": str,
+        "servicer": str,
+        "interest_rate": np.float64,
+        "current_actual_upb": np.float64,
+        "loan_age": np.float64,
+        "remaining_months_to_legal_maturity": np.float64,
+        "adj_remaining_months_to_maturity": np.float64,
+        "maturity_date": str,
+        "msa": np.float64,
+        "current_loan_delinquency_status": np.int32,
+        "mod_flag": CategoricalDtype(['N', 'Y']),
+        "zero_balance_code": CategoricalDtype(['01', '02', '06', '09', '03', '15', '16']),
+        "zero_balance_effective_date": str,
+        "last_paid_installment_date": str,
+        "foreclosed_after": str,
+        "disposition_date": str,
+        "foreclosure_costs": np.float64,
+        "prop_preservation_and_repair_costs": np.float64,
+        "asset_recovery_costs": np.float64,
+        "misc_holding_expenses": np.float64,
+        "holding_taxes": np.float64,
+        "net_sale_proceeds": np.float64,
+        "credit_enhancement_proceeds": np.float64,
+        "repurchase_make_whole_proceeds": np.float64,
+        "other_foreclosure_proceeds": np.float64,
+        "non_interest_bearing_upb": np.float64,
+        "principal_forgiveness_upb": np.float64,
+        "repurchase_make_whole_proceeds_flag": CategoricalDtype(['N', 'Y']),
+        "foreclosure_principal_write_off_amount": np.float64,
+        "servicing_activity_indicator": CategoricalDtype(['N', 'Y']),
+    }
+
+    return ddf.read_csv(performance_path, names=cols, delimiter='|', dtype=dtypes, parse_dates=[1,8,13,14,15,16], assume_missing=True)
+
+
+def pd_load_acquisition_csv(acquisition_path, **kwargs):
+    """ Loads acquisition data
+
+    Returns
+    -------
+    PD DataFrame
+    """
+
+    cols = [
+        'loan_id', 'orig_channel', 'seller_name', 'orig_interest_rate', 'orig_upb', 'orig_loan_term',
+        'orig_date', 'first_pay_date', 'orig_ltv', 'orig_cltv', 'num_borrowers', 'dti', 'borrower_credit_score',
+        'first_home_buyer', 'loan_purpose', 'property_type', 'num_units', 'occupancy_status', 'property_state',
+        'zip', 'mortgage_insurance_percent', 'product_type', 'coborrow_credit_score', 'mortgage_insurance_type',
+        'relocation_mortgage_indicator'
     ]
     dtypes = {
         "loan_id": np.int64,
@@ -92,64 +145,8 @@ def pd_load_performance_csv(performance_path, **kwargs):
         "relocation_mortgage_indicator": CategoricalDtype(['N', 'Y']),
     }
 
-    print(performance_path)
+    return ddf.read_csv(acquisition_path, names=cols, delimiter='|', dtype=dtypes, parse_dates=[6,7], assume_missing=True)
 
-    #return ddf.read_csv(performance_path, names=cols, delimiter='|', dtype=dtypes, parse_dates=[1,8,13,14,15,16], assume_missing=True)
-    return ddf.read_csv('perf.csv', names=cols, delimiter='|', dtype=dtypes, parse_dates=[1,8,13,14,15,16], assume_missing=True)
-
-def pd_load_acquisition_csv(acquisition_path, **kwargs):
-    """ Loads acquisition data
-
-    Returns
-    -------
-    PD DataFrame
-    """
-
-    cols = [
-        'loan_id', 'orig_channel', 'seller_name', 'orig_interest_rate', 'orig_upb', 'orig_loan_term',
-        'orig_date', 'first_pay_date', 'orig_ltv', 'orig_cltv', 'num_borrowers', 'dti', 'borrower_credit_score',
-        'first_home_buyer', 'loan_purpose', 'property_type', 'num_units', 'occupancy_status', 'property_state',
-        'zip', 'mortgage_insurance_percent', 'product_type', 'coborrow_credit_score', 'mortgage_insurance_type',
-        'relocation_mortgage_indicator'
-    ]
-
-    dtypes = {
-        "loan_id": np.int64,
-        "monthly_reporting_period": str,
-        "servicer": str,
-        "interest_rate": np.float64,
-        "current_actual_upb": np.float64,
-        "loan_age": np.float64,
-        "remaining_months_to_legal_maturity": np.float64,
-        "adj_remaining_months_to_maturity": np.float64,
-        "maturity_date": str,
-        "msa": np.float64,
-        "current_loan_delinquency_status": np.int32,
-        "mod_flag": CategoricalDtype(['N', 'Y']),
-        "zero_balance_code": CategoricalDtype(['01', '02', '06', '09', '03', '15', '16']),
-        "zero_balance_effective_date": str,
-        "last_paid_installment_date": str,
-        "foreclosed_after": str,
-        "disposition_date": str,
-        "foreclosure_costs": np.float64,
-        "prop_preservation_and_repair_costs": np.float64,
-        "asset_recovery_costs": np.float64,
-        "misc_holding_expenses": np.float64,
-        "holding_taxes": np.float64,
-        "net_sale_proceeds": np.float64,
-        "credit_enhancement_proceeds": np.float64,
-        "repurchase_make_whole_proceeds": np.float64,
-        "other_foreclosure_proceeds": np.float64,
-        "non_interest_bearing_upb": np.float64,
-        "principal_forgiveness_upb": np.float64,
-        "repurchase_make_whole_proceeds_flag": CategoricalDtype(['N', 'Y']),
-        "foreclosure_principal_write_off_amount": np.float64,
-        "servicing_activity_indicator": CategoricalDtype(['N', 'Y']),
-    }
-    print(acquisition_path)
-
-    #return ddf.read_csv(acquisition_path, names=cols, delimiter='|', dtype=dtypes, parse_dates=[6,7], assume_missing=True)
-    return ddf.read_csv('acq.csv', names=cols, delimiter='|', dtype=dtypes, parse_dates=[6,7], assume_missing=True)
 
 def pd_load_names(**kwargs):
     """ Loads names used for renaming the banks
@@ -212,8 +209,6 @@ def join_ever_delinq_features(everdf_tmp, delinq_merge, **kwargs):
     everdf['delinquency_90'] = everdf['delinquency_90'].fillna(np.dtype('datetime64[ms]').type('1970-01-01').astype('datetime64[ms]'))
     everdf['delinquency_180'] = everdf['delinquency_180'].fillna(np.dtype('datetime64[ms]').type('1970-01-01').astype('datetime64[ms]'))
     return everdf
-
-
 
 
 def create_joined_df(pdf, everdf, **kwargs):
