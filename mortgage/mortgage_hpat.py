@@ -4,6 +4,12 @@
 # You need a relatively recent HPAT/SDC which supports boxing cotegoricals
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# This code does not work correctly on multiple nodes, only on a singe compute node.
+# To make it work on multiple nodes everything need to be put into a single
+# function, or SDC needs to properly support distributed input.
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 import numpy as np
 import pandas as pd
 from pandas.api.types import CategoricalDtype
